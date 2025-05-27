@@ -40,7 +40,7 @@ class BlackjackGame:
                 "stopped": False
             }
             return f'{name} 加入了游戏。'
-初始牌：{self._format_cards(self.players[user_id]['cards'])} 点数：{self._calculate_points(self.players[user_id]['cards'])}"
+return f"初始牌：{self._format_cards(self.players[user_id]['cards'])} 点数：{self._calculate_points(self.players[user_id]['cards'])}"
         else:
             return f"{name} 已在游戏中。"
 

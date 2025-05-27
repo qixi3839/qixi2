@@ -3,8 +3,6 @@ import random
 class BlackjackGame:
     def __init__(self):
         self.players = {}
-        self.deck = self._create_deck()
-        self.stopped = {}
 
     def _create_deck(self):
         deck = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] * 4
@@ -12,7 +10,7 @@ class BlackjackGame:
         return deck
 
     def _deal_card(self):
-        if not self.deck:
+        if not hasattr(self, 'deck') or not self.deck:
             self.deck = self._create_deck()
         return self.deck.pop()
 
@@ -23,8 +21,8 @@ class BlackjackGame:
             if card in ['J', 'Q', 'K']:
                 total += 10
             elif card == 'A':
-                aces += 1
                 total += 11
+                aces += 1
             else:
                 total += int(card)
         while total > 21 and aces:
@@ -32,23 +30,21 @@ class BlackjackGame:
             aces -= 1
         return total
 
+    def _format_cards(self, cards):
+        emoji_map = {'A': '🃏A', 'J': '🃏J', 'Q': '🃏Q', 'K': '🃏K'}
+        return ' '.join([emoji_map.get(c, f"🃏{c}") for c in cards])
+
     def add_player(self, user_id, name):
         if user_id not in self.players:
             self.players[user_id] = {
-                "name": name,
-                "cards": [self._deal_card(), self._deal_card()],
-                "stopped": False
+                'name': name,
+                'cards': [self._deal_card(), self._deal_card()],
+                'stopped': False
             }
-            return f'{name} 加入了游戏。'
-return f"初始牌：{self._format_cards(self.players[user_id]['cards'])} 点数：{self._calculate_points(self.players[user_id]['cards'])}"
-if user_id not in self.players:
-    self.players[user_id] = {
-        'cards': [],
-        'stand': False
-    }
-    return f'{name} 加入了游戏。'
-else:
-    return f'{name} 已经在游戏中。'
+            cards = self.players[user_id]['cards']
+            return f"{name} 加入了游戏。\n初始牌：{self._format_cards(cards)} 点数：{self._calculate_points(cards)}"
+        else:
+            return f"{name} 已经在游戏中。"
 
     def player_hit(self, user_id):
         if user_id in self.players and not self.players[user_id]["stopped"]:
@@ -66,7 +62,3 @@ else:
             self.players[user_id]["stopped"] = True
             return f"{self.players[user_id]['name']} 选择停牌。"
         return "你还没加入游戏。"
-
-    def _format_cards(self, cards):
-        emoji_map = {'A': '🃏A', 'J': '🃏J', 'Q': '🃏Q', 'K': '🃏K'}
-        return ' '.join([emoji_map.get(c, f"🃏{c}") for c in cards])

@@ -41,8 +41,14 @@ class BlackjackGame:
             }
             return f'{name} 加入了游戏。'
 return f"初始牌：{self._format_cards(self.players[user_id]['cards'])} 点数：{self._calculate_points(self.players[user_id]['cards'])}"
-        else:
-            return f"{name} 已在游戏中。"
+if user_id not in self.players:
+    self.players[user_id] = {
+        'cards': [],
+        'stand': False
+    }
+    return f'{name} 加入了游戏。'
+else:
+    return f'{name} 已经在游戏中。'
 
     def player_hit(self, user_id):
         if user_id in self.players and not self.players[user_id]["stopped"]:
